@@ -58,7 +58,7 @@
             filter: hue-rotate(0deg);
             opacity: 1;
             transform: scale(1);
-            transition: transform 6s ease-in-out, opacity 6s ease-in-out;
+            transition: transform 8s ease-in-out, opacity 8s ease-in-out;
         }
         @media (max-width: 768px) {
             .layer {
@@ -86,10 +86,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             const starsContainer = document.querySelector(".stars-container");
             const stars = [];
-            const minScale = 0.75;
-            const maxScale = 1.25;
+            const minScale = 0.4;
+            const maxScale = 1.6;
             const interactionRadius = 200;
-            const moveDistance = 40;
+            const moveDistance = 80;
             
             for (let i = 0; i < 50; i++) {
                 let star = document.createElement("div");
@@ -98,19 +98,32 @@
                 star.style.top = Math.random() * 100 + "vh";
                 star.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
                 starsContainer.appendChild(star);
-                stars.push({ element: star, scaleDirection: 1, speed: Math.random() * 0.05 + 0.02 });
+                stars.push({
+                    element: star,
+                    scale: Math.random() * (maxScale - minScale) + minScale,
+                    opacity: Math.random() * (1 - 0.4) + 0.4,
+                    scaleDirection: 1,
+                    opacityDirection: 1,
+                    speed: Math.random() * 0.08 + 0.02
+                });
             }
             
             function updateStars() {
                 stars.forEach(starObj => {
                     let star = starObj.element;
-                    let newScale = parseFloat(star.style.transform.replace(/[^0-9.]/g, '')) || 1;
-                    if (newScale >= maxScale) starObj.scaleDirection = -1;
-                    if (newScale <= minScale) starObj.scaleDirection = 1;
-                    newScale += starObj.scaleDirection * starObj.speed;
-                    let opacity = 0.1 + Math.random() * 0.9;
-                    star.style.transform = `scale(${newScale})`;
-                    star.style.opacity = opacity;
+                    
+                    // Изменение масштаба
+                    if (starObj.scale >= maxScale) starObj.scaleDirection = -1;
+                    if (starObj.scale <= minScale) starObj.scaleDirection = 1;
+                    starObj.scale += starObj.scaleDirection * starObj.speed;
+                    
+                    // Изменение прозрачности
+                    if (starObj.opacity >= 1) starObj.opacityDirection = -1;
+                    if (starObj.opacity <= 0.4) starObj.opacityDirection = 1;
+                    starObj.opacity += starObj.opacityDirection * (starObj.speed / 2);
+                    
+                    star.style.transform = `scale(${starObj.scale})`;
+                    star.style.opacity = starObj.opacity;
                 });
             }
             
@@ -129,7 +142,7 @@
                         let angle = Math.atan2(starY - mouseY, starX - mouseX);
                         let moveX = Math.cos(angle) * moveDistance;
                         let moveY = Math.sin(angle) * moveDistance;
-                        star.style.transform = `translate(${moveX}px, ${moveY}px) scale(${parseFloat(star.style.transform.match(/scale\(([^)]+)\)/)[1])})`;
+                        star.style.transform = `translate(${moveX}px, ${moveY}px) scale(${starObj.scale})`;
                     }
                 });
             }
