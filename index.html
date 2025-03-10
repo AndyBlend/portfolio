@@ -57,8 +57,8 @@
             background-repeat: no-repeat;
             filter: hue-rotate(0deg);
             opacity: 1;
-            transform: scale(1) rotate(0deg);
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+            transform: scale(1);
+            transition: transform 2s ease-in-out, opacity 2s ease-in-out;
         }
         @media (max-width: 768px) {
             .layer {
@@ -80,64 +80,16 @@
     <div class="container">
         <h1>Andrei Bazhanov</h1>
         <p>Режиссёр | 3D-художник | Композитор</p>
-
-        <div class="videos">
-            <h2>Видео</h2>
-            <div class="video">
-                <p><a href="https://www.youtube.com/watch?v=oWWhn0h-QGk" target="_blank">Limace et Limacette</a></p>
-            </div>
-            <div class="video">
-                <p><a href="https://www.youtube.com/watch?v=R_AO-FJdhBs" target="_blank">Master Walker</a></p>
-            </div>
-            <div class="video">
-                <p><a href="https://www.youtube.com/watch?v=voEsjYh4-Uw" target="_blank">Moydodyr</a></p>
-            </div>
-            <div class="video">
-                <p><a href="https://www.youtube.com/watch?v=O6NUWm-P0Es" target="_blank">Prorucha</a></p>
-            </div>
-        </div>
-
-        <div class="projects">
-            <h2>Работы</h2>
-            <div class="project"> 
-                <p>Слот для картинки 1</p> 
-            </div>
-            <div class="project"> 
-                <p>Слот для картинки 2</p> 
-            </div>
-            <div class="project"> 
-                <p>Слот для картинки 3</p> 
-            </div>
-        </div>
-
-        <div class="contact">
-            <h2>Контакты</h2>
-            <p>Email: твой email</p>
-            <p>Telegram: твой telegram</p>
-        </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const layers = document.querySelectorAll(".layer");
-            if (!layers.length) return;
-            
-            function parallaxEffect() {
-                let scrollY = window.scrollY;
-                let speedFactor = window.innerWidth < 768 ? 0.3 : 1;
-                layers[0].style.transform = `translateY(${-scrollY * 0.1 * speedFactor}px)`;
-                layers[1].style.transform = `translateY(${-scrollY * 0.3 * speedFactor}px)`;
-                layers[2].style.transform = `translateY(${-scrollY * 0.5 * speedFactor}px)`;
-                layers[3].style.transform = `translateY(${-scrollY * 0.7 * speedFactor}px)`;
-            }
-            
-            window.addEventListener("scroll", () => {
-                requestAnimationFrame(parallaxEffect);
-            });
-
-            // Генерация звёзд
             const starsContainer = document.querySelector(".stars-container");
             const stars = [];
+            const minScale = 0.5;
+            const maxScale = 2;
+            const interactionRadius = 100;
+            
             for (let i = 0; i < 50; i++) {
                 let star = document.createElement("div");
                 star.classList.add("star");
@@ -145,18 +97,44 @@
                 star.style.top = Math.random() * 100 + "vh";
                 star.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
                 starsContainer.appendChild(star);
-                stars.push(star);
+                stars.push({ element: star, scaleDirection: 1 });
             }
-
-            window.addEventListener("scroll", () => {
-                stars.forEach(star => {
-                    let scale = 0.5 + Math.random();
-                    let opacity = 0.5 + Math.random() * 0.5;
-                    let rotation = Math.random() * 360;
-                    star.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+            
+            function updateStars() {
+                stars.forEach(starObj => {
+                    let star = starObj.element;
+                    let newScale = parseFloat(star.style.transform.replace(/[^0-9.]/g, '')) || 1;
+                    if (newScale >= maxScale) starObj.scaleDirection = -1;
+                    if (newScale <= minScale) starObj.scaleDirection = 1;
+                    newScale += starObj.scaleDirection * 0.1;
+                    let opacity = 0.2 + Math.random() * 0.8;
+                    star.style.transform = `scale(${newScale})`;
                     star.style.opacity = opacity;
                 });
-            });
+            }
+            
+            function moveStarsFromCursor(event) {
+                let mouseX = event.clientX;
+                let mouseY = event.clientY;
+                
+                stars.forEach(starObj => {
+                    let star = starObj.element;
+                    let rect = star.getBoundingClientRect();
+                    let starX = rect.left + rect.width / 2;
+                    let starY = rect.top + rect.height / 2;
+                    let distance = Math.sqrt((starX - mouseX) ** 2 + (starY - mouseY) ** 2);
+                    
+                    if (distance < interactionRadius) {
+                        let angle = Math.atan2(starY - mouseY, starX - mouseX);
+                        let moveX = Math.cos(angle) * 20;
+                        let moveY = Math.sin(angle) * 20;
+                        star.style.transform = `translate(${moveX}px, ${moveY}px) scale(${parseFloat(star.style.transform.match(/scale\(([^)]+)\)/)[1])})`;
+                    }
+                });
+            }
+            
+            window.addEventListener("scroll", updateStars);
+            window.addEventListener("mousemove", moveStarsFromCursor);
         });
     </script>
 </body>
