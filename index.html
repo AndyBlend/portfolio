@@ -56,6 +56,9 @@
             background-size: contain;
             background-repeat: no-repeat;
             filter: hue-rotate(0deg);
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
         }
         @media (max-width: 768px) {
             .layer {
@@ -134,6 +137,7 @@
 
             // Генерация звёзд
             const starsContainer = document.querySelector(".stars-container");
+            const stars = [];
             for (let i = 0; i < 50; i++) {
                 let star = document.createElement("div");
                 star.classList.add("star");
@@ -141,7 +145,18 @@
                 star.style.top = Math.random() * 100 + "vh";
                 star.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
                 starsContainer.appendChild(star);
+                stars.push(star);
             }
+
+            window.addEventListener("scroll", () => {
+                stars.forEach(star => {
+                    let scale = 0.5 + Math.random();
+                    let opacity = 0.5 + Math.random() * 0.5;
+                    let rotation = Math.random() * 360;
+                    star.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+                    star.style.opacity = opacity;
+                });
+            });
         });
     </script>
 </body>
