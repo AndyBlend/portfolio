@@ -39,6 +39,24 @@
             z-index: 10;
             padding-top: 100vh;
         }
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('star.png'); /* Загруженная пользователем картинка */
+            background-size: contain;
+            background-repeat: no-repeat;
+            filter: hue-rotate(0deg);
+        }
         @media (max-width: 768px) {
             .layer {
                 background-size: contain;
@@ -53,6 +71,8 @@
         <div class="layer layer3"></div>
         <div class="layer layer4"></div>
     </div>
+
+    <div class="stars-container"></div>
 
     <div class="container">
         <h1>Andrei Bazhanov</h1>
@@ -97,11 +117,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const layers = document.querySelectorAll(".layer");
-            if (!layers.length) return; // Проверяем, загружены ли элементы
+            if (!layers.length) return;
             
             function parallaxEffect() {
                 let scrollY = window.scrollY;
-                let speedFactor = window.innerWidth < 768 ? 0.3 : 1; // Медленнее на мобильных
+                let speedFactor = window.innerWidth < 768 ? 0.3 : 1;
                 layers[0].style.transform = `translateY(${-scrollY * 0.1 * speedFactor}px)`;
                 layers[1].style.transform = `translateY(${-scrollY * 0.3 * speedFactor}px)`;
                 layers[2].style.transform = `translateY(${-scrollY * 0.5 * speedFactor}px)`;
@@ -111,6 +131,17 @@
             window.addEventListener("scroll", () => {
                 requestAnimationFrame(parallaxEffect);
             });
+
+            // Генерация звёзд
+            const starsContainer = document.querySelector(".stars-container");
+            for (let i = 0; i < 50; i++) {
+                let star = document.createElement("div");
+                star.classList.add("star");
+                star.style.left = Math.random() * 100 + "vw";
+                star.style.top = Math.random() * 100 + "vh";
+                star.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                starsContainer.appendChild(star);
+            }
         });
     </script>
 </body>
