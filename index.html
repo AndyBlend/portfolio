@@ -9,7 +9,6 @@
             margin: 0;
             overflow-x: hidden;
             font-family: Arial, sans-serif;
-            text-align: center;
             background-color: #111;
             color: #eee;
         }
@@ -18,14 +17,14 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
+            height: 130vh;
             z-index: -1;
             overflow: hidden;
         }
         .layer {
             position: absolute;
             width: 100%;
-            height: 100%;
+            height: 130vh;
             background-size: cover;
             background-position: center;
             will-change: transform;
@@ -35,9 +34,12 @@
         .layer3 { background-image: url('layer2.png'); transform: translateY(0px); }
         .layer4 { background-image: url('layer1.png'); transform: translateY(0px); }
         .container {
-            position: relative;
+            position: absolute;
+            top: 0;
+            right: 20px;
             z-index: 10;
-            padding-top: 100vh;
+            text-align: right;
+            padding: 20px;
         }
         .stars-container, .cursor-stars {
             position: fixed;
@@ -48,27 +50,18 @@
             pointer-events: none;
             z-index: -1;
         }
-        .star, .cursor-star {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-image: url('star.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            filter: hue-rotate(0deg);
-            opacity: 1;
-            transform: scale(1);
-            transition: transform 4s ease-in-out, opacity 4s ease-in-out;
-        }
         .cursor-star {
-            width: 10px;
-            height: 10px;
-            background-image: url('cursor-star.png');
-            filter: hue-rotate(0deg) brightness(200%) saturate(300%);
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: red;
+            border-radius: 50%;
+            opacity: 1;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
         }
         @media (max-width: 768px) {
             .layer {
-                background-size: contain;
+                height: 130vh;
             }
         }
     </style>
@@ -101,65 +94,31 @@
             }
             window.addEventListener("scroll", parallaxEffect);
 
-            const starsContainer = document.querySelector(".stars-container");
-            const cursorStarsContainer = document.querySelector(".cursor-stars");
-            const stars = [];
-            const minScale = 0.4;
-            const maxScale = 1.6;
-            const interactionRadius = 200;
-            const moveDistance = 1440;
-            
-            for (let i = 0; i < 50; i++) {
+            function createCursorStar(x, y) {
                 let star = document.createElement("div");
-                star.classList.add("star");
-                star.style.left = Math.random() * 100 + "vw";
-                star.style.top = Math.random() * 100 + "vh";
-                star.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
-                starsContainer.appendChild(star);
-                stars.push({
-                    element: star,
-                    scale: Math.random() * (maxScale - minScale) + minScale,
-                    opacity: Math.random() * (1 - 0.4) + 0.4,
-                    scaleDirection: 1,
-                    opacityDirection: 1,
-                    speed: Math.random() * 0.4 + 0.1
-                });
+                star.classList.add("cursor-star");
+                star.style.left = `${x}px`;
+                star.style.top = `${y}px`;
+                document.body.appendChild(star);
+                let angle = Math.random() * 2 * Math.PI;
+                let speed = Math.random() * 2 + 1;
+                let moveX = Math.cos(angle) * speed * 50;
+                let moveY = Math.sin(angle) * speed * 50 + 100;
+                setTimeout(() => {
+                    star.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    star.style.opacity = "0";
+                }, 50);
+                setTimeout(() => star.remove(), 2000);
             }
             
-            function updateStars() {
-                stars.forEach(starObj => {
-                    let star = starObj.element;
-                    if (starObj.scale >= maxScale) starObj.scaleDirection = -1;
-                    if (starObj.scale <= minScale) starObj.scaleDirection = 1;
-                    starObj.scale += starObj.scaleDirection * starObj.speed;
-                    if (starObj.opacity >= 1) starObj.opacityDirection = -1;
-                    if (starObj.opacity <= 0.4) starObj.opacityDirection = 1;
-                    starObj.opacity += starObj.opacityDirection * (starObj.speed / 2);
-                    star.style.transform = `scale(${starObj.scale})`;
-                    star.style.opacity = starObj.opacity;
-                });
-            }
+            setInterval(() => {
+                const { clientX, clientY } = window.cursorPos || { clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 };
+                createCursorStar(clientX, clientY);
+            }, 200);
             
-            function moveStarsFromCursor(event) {
-                let mouseX = event.clientX;
-                let mouseY = event.clientY;
-                stars.forEach(starObj => {
-                    let star = starObj.element;
-                    let rect = star.getBoundingClientRect();
-                    let starX = rect.left + rect.width / 2;
-                    let starY = rect.top + rect.height / 2;
-                    let distance = Math.sqrt((starX - mouseX) ** 2 + (starY - mouseY) ** 2);
-                    if (distance < interactionRadius) {
-                        let angle = Math.atan2(starY - mouseY, starX - mouseX);
-                        let moveX = Math.cos(angle) * moveDistance;
-                        let moveY = Math.sin(angle) * moveDistance;
-                        star.style.transform = `translate(${moveX}px, ${moveY}px) scale(${starObj.scale})`;
-                    }
-                });
-            }
-            
-            window.addEventListener("scroll", updateStars);
-            window.addEventListener("mousemove", moveStarsFromCursor);
+            window.addEventListener("mousemove", (e) => {
+                window.cursorPos = { clientX: e.clientX, clientY: e.clientY };
+            });
         });
     </script>
 </body>
