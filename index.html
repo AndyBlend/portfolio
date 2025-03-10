@@ -28,6 +28,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
+            will-change: transform;
         }
         .layer1 { background-image: url('layer1.png'); transform: translateY(0px); }
         .layer2 { background-image: url('layer2.png'); transform: translateY(0px); }
@@ -94,15 +95,23 @@
     </div>
 
     <script>
-        function parallaxEffect() {
-            let scrollY = window.scrollY;
-            let speedFactor = window.innerWidth < 768 ? 0.5 : 1; // Медленнее на мобильных
-            document.querySelector('.layer1').style.transform = `translateY(${scrollY * 0.2 * speedFactor}px)`;
-            document.querySelector('.layer2').style.transform = `translateY(${scrollY * 0.4 * speedFactor}px)`;
-            document.querySelector('.layer3').style.transform = `translateY(${scrollY * 0.6 * speedFactor}px)`;
-            document.querySelector('.layer4').style.transform = `translateY(${scrollY * 0.8 * speedFactor}px)`;
-        }
-        window.addEventListener('scroll', parallaxEffect);
+        document.addEventListener("DOMContentLoaded", () => {
+            const layers = document.querySelectorAll(".layer");
+            if (!layers.length) return; // Проверяем, загружены ли элементы
+            
+            function parallaxEffect() {
+                let scrollY = window.scrollY;
+                let speedFactor = window.innerWidth < 768 ? 0.3 : 1; // Медленнее на мобильных
+                layers[0].style.transform = `translateY(${scrollY * 0.1 * speedFactor}px)`;
+                layers[1].style.transform = `translateY(${scrollY * 0.3 * speedFactor}px)`;
+                layers[2].style.transform = `translateY(${scrollY * 0.5 * speedFactor}px)`;
+                layers[3].style.transform = `translateY(${scrollY * 0.7 * speedFactor}px)`;
+            }
+            
+            window.addEventListener("scroll", () => {
+                requestAnimationFrame(parallaxEffect);
+            });
+        });
     </script>
 </body>
 </html>
