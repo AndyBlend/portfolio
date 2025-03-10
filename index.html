@@ -40,6 +40,7 @@
             z-index: 10;
             text-align: right;
             padding: 20px;
+            width: 40%;
         }
         .stars-container, .cursor-stars {
             position: fixed;
@@ -50,12 +51,13 @@
             pointer-events: none;
             z-index: -1;
         }
-        .cursor-star {
+        .star, .cursor-star {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: red;
-            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            background-image: url('star.png');
+            background-size: contain;
+            background-repeat: no-repeat;
             opacity: 1;
             transition: transform 1s ease-in-out, opacity 1s ease-in-out;
         }
@@ -80,6 +82,8 @@
     <div class="container">
         <h1>Andrei Bazhanov</h1>
         <p>Режиссёр | 3D-художник | Композитор</p>
+        <p>Работы, проекты, видео и информация о творчестве.</p>
+        <p>Контакты и другая информация здесь.</p>
     </div>
 
     <script>
@@ -87,10 +91,10 @@
             const layers = document.querySelectorAll(".layer");
             function parallaxEffect() {
                 let scrollY = window.scrollY;
-                layers[0].style.transform = `translateY(${-scrollY * 0.4}px)`;
-                layers[1].style.transform = `translateY(${-scrollY * 0.6}px)`;
-                layers[2].style.transform = `translateY(${-scrollY * 0.8}px)`;
-                layers[3].style.transform = `translateY(${-scrollY * 1}px)`;
+                layers[0].style.transform = `translateY(${-scrollY * 0.2}px)`;
+                layers[1].style.transform = `translateY(${-scrollY * 0.4}px)`;
+                layers[2].style.transform = `translateY(${-scrollY * 0.6}px)`;
+                layers[3].style.transform = `translateY(${-scrollY * 0.8}px)`;
             }
             window.addEventListener("scroll", parallaxEffect);
 
