@@ -102,10 +102,10 @@
             function parallaxEffect() {
                 let scrollY = window.scrollY;
                 let speedFactor = window.innerWidth < 768 ? 0.3 : 1; // Медленнее на мобильных
-                layers[0].style.transform = `translateY(${scrollY * 0.1 * speedFactor}px)`;
-                layers[1].style.transform = `translateY(${scrollY * 0.3 * speedFactor}px)`;
-                layers[2].style.transform = `translateY(${scrollY * 0.5 * speedFactor}px)`;
-                layers[3].style.transform = `translateY(${scrollY * 0.7 * speedFactor}px)`;
+                layers[0].style.transform = `translateY(${-scrollY * 0.1 * speedFactor}px)`;
+                layers[1].style.transform = `translateY(${-scrollY * 0.3 * speedFactor}px)`;
+                layers[2].style.transform = `translateY(${-scrollY * 0.5 * speedFactor}px)`;
+                layers[3].style.transform = `translateY(${-scrollY * 0.7 * speedFactor}px)`;
             }
             
             window.addEventListener("scroll", () => {
