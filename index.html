@@ -39,7 +39,7 @@
             z-index: 10;
             padding-top: 100vh;
         }
-        .stars-container {
+        .stars-container, .cursor-stars {
             position: fixed;
             top: 0;
             left: 0;
@@ -48,7 +48,7 @@
             pointer-events: none;
             z-index: -1;
         }
-        .star {
+        .star, .cursor-star {
             position: absolute;
             width: 20px;
             height: 20px;
@@ -58,7 +58,13 @@
             filter: hue-rotate(0deg);
             opacity: 1;
             transform: scale(1);
-            transition: transform 8s ease-in-out, opacity 8s ease-in-out;
+            transition: transform 40s ease-in-out, opacity 40s ease-in-out;
+        }
+        .cursor-star {
+            width: 10px;
+            height: 10px;
+            background-image: url('cursor-star.png');
+            filter: hue-rotate(0deg) brightness(200%) saturate(300%);
         }
         @media (max-width: 768px) {
             .layer {
@@ -76,6 +82,7 @@
     </div>
 
     <div class="stars-container"></div>
+    <div class="cursor-stars"></div>
 
     <div class="container">
         <h1>Andrei Bazhanov</h1>
@@ -85,11 +92,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const starsContainer = document.querySelector(".stars-container");
+            const cursorStarsContainer = document.querySelector(".cursor-stars");
             const stars = [];
             const minScale = 0.4;
             const maxScale = 1.6;
             const interactionRadius = 200;
-            const moveDistance = 80;
+            const moveDistance = 240;
             
             for (let i = 0; i < 50; i++) {
                 let star = document.createElement("div");
@@ -104,7 +112,7 @@
                     opacity: Math.random() * (1 - 0.4) + 0.4,
                     scaleDirection: 1,
                     opacityDirection: 1,
-                    speed: Math.random() * 0.08 + 0.02
+                    speed: Math.random() * 0.016 + 0.004
                 });
             }
             
@@ -112,12 +120,10 @@
                 stars.forEach(starObj => {
                     let star = starObj.element;
                     
-                    // Изменение масштаба
                     if (starObj.scale >= maxScale) starObj.scaleDirection = -1;
                     if (starObj.scale <= minScale) starObj.scaleDirection = 1;
                     starObj.scale += starObj.scaleDirection * starObj.speed;
                     
-                    // Изменение прозрачности
                     if (starObj.opacity >= 1) starObj.opacityDirection = -1;
                     if (starObj.opacity <= 0.4) starObj.opacityDirection = 1;
                     starObj.opacity += starObj.opacityDirection * (starObj.speed / 2);
@@ -147,8 +153,24 @@
                 });
             }
             
+            function createCursorStar(x, y) {
+                let star = document.createElement("div");
+                star.classList.add("cursor-star");
+                star.style.left = x + "px";
+                star.style.top = y + "px";
+                cursorStarsContainer.appendChild(star);
+                setTimeout(() => {
+                    star.style.top = `${parseInt(star.style.top) + 50 + Math.random() * 50}px`;
+                    star.style.opacity = "0";
+                }, 50);
+                setTimeout(() => star.remove(), 1000);
+            }
+            
             window.addEventListener("scroll", updateStars);
             window.addEventListener("mousemove", moveStarsFromCursor);
+            window.addEventListener("mousemove", (e) => {
+                if (Math.random() > 0.5) createCursorStar(e.clientX, e.clientY);
+            });
         });
     </script>
 </body>
