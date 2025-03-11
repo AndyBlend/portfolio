@@ -6,124 +6,78 @@
     <title>Andrei Bazhanov - Portfolio</title>
     <style>
         body {
-            margin: 0;
-            overflow-x: hidden;
-            font-family: Arial, sans-serif;
             background-color: #111;
             color: #eee;
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
-        .parallax {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 130vh;
-            z-index: -1;
-            overflow: hidden;
-        }
-        .layer {
-            position: absolute;
-            width: 100%;
-            height: 130vh;
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-        }
-        .layer1 { background-image: url('layer4.png'); transform: translateY(0px); }
-        .layer2 { background-image: url('layer3.png'); transform: translateY(0px); }
-        .layer3 { background-image: url('layer2.png'); transform: translateY(0px); }
-        .layer4 { background-image: url('layer1.png'); transform: translateY(0px); }
         .container {
-            position: absolute;
-            top: 0;
-            right: 20px;
-            z-index: 10;
-            text-align: right;
+            width: 80%;
+            margin: auto;
             padding: 20px;
-            width: 40%;
         }
-        .stars-container, .cursor-stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            pointer-events: none;
-            z-index: -1;
+        h1, h2 {
+            border-bottom: 2px solid #666;
+            display: inline-block;
+            padding-bottom: 5px;
         }
-        .star, .cursor-star {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-image: url('star.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            opacity: 1;
-            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+        .projects, .videos {
+            margin: 40px 0;
         }
-        @media (max-width: 768px) {
-            .layer {
-                height: 130vh;
-            }
+        .project, .video {
+            background-color: #222;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        a {
+            color: #bb86fc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="parallax">
-        <div class="layer layer1"></div>
-        <div class="layer layer2"></div>
-        <div class="layer layer3"></div>
-        <div class="layer layer4"></div>
-    </div>
-
-    <div class="stars-container"></div>
-    <div class="cursor-stars"></div>
-
     <div class="container">
         <h1>Andrei Bazhanov</h1>
         <p>Режиссёр | 3D-художник | Композитор</p>
-        <p>Работы, проекты, видео и информация о творчестве.</p>
-        <p>Контакты и другая информация здесь.</p>
+
+        <div class="videos">
+            <h2>Видео</h2>
+            <div class="video">
+                <p><a href="https://www.youtube.com/watch?v=oWWhn0h-QGk" target="_blank">Limace et Limacette</a></p>
+            </div>
+            <div class="video">
+                <p><a href="https://www.youtube.com/watch?v=R_AO-FJdhBs" target="_blank">Master Walker</a></p>
+            </div>
+            <div class="video">
+                <p><a href="https://www.youtube.com/watch?v=voEsjYh4-Uw" target="_blank">Moydodyr</a></p>
+            </div>
+            <div class="video">
+                <p><a href="https://www.youtube.com/watch?v=O6NUWm-P0Es" target="_blank">Prorucha</a></p>
+            </div>
+        </div>
+
+        <div class="projects">
+            <h2>Работы</h2>
+            <div class="project"> 
+                <p>Слот для картинки 1</p> 
+            </div>
+            <div class="project"> 
+                <p>Слот для картинки 2</p> 
+            </div>
+            <div class="project"> 
+                <p>Слот для картинки 3</p> 
+            </div>
+        </div>
+
+        <div class="contact">
+            <h2>Контакты</h2>
+            <p>Email: твой email</p>
+            <p>Telegram: твой telegram</p>
+        </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const layers = document.querySelectorAll(".layer");
-            function parallaxEffect() {
-                let scrollY = window.scrollY;
-                layers[0].style.transform = `translateY(${-scrollY * 0.2}px)`;
-                layers[1].style.transform = `translateY(${-scrollY * 0.4}px)`;
-                layers[2].style.transform = `translateY(${-scrollY * 0.6}px)`;
-                layers[3].style.transform = `translateY(${-scrollY * 0.8}px)`;
-            }
-            window.addEventListener("scroll", parallaxEffect);
-
-            function createCursorStar(x, y) {
-                let star = document.createElement("div");
-                star.classList.add("cursor-star");
-                star.style.left = `${x}px`;
-                star.style.top = `${y}px`;
-                document.body.appendChild(star);
-                let angle = Math.random() * 2 * Math.PI;
-                let speed = Math.random() * 2 + 1;
-                let moveX = Math.cos(angle) * speed * 50;
-                let moveY = Math.sin(angle) * speed * 50 + 100;
-                setTimeout(() => {
-                    star.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                    star.style.opacity = "0";
-                }, 50);
-                setTimeout(() => star.remove(), 2000);
-            }
-            
-            setInterval(() => {
-                const { clientX, clientY } = window.cursorPos || { clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 };
-                createCursorStar(clientX, clientY);
-            }, 200);
-            
-            window.addEventListener("mousemove", (e) => {
-                window.cursorPos = { clientX: e.clientX, clientY: e.clientY };
-            });
-        });
-    </script>
 </body>
 </html>
